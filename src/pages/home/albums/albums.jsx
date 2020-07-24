@@ -5,7 +5,7 @@ import LineEllipsis from '@/components/LineEllipsis';
 
 import cssStyles from './albums.module.scss';
 
-@connect(({ packageHome: { albums } }) => ({ albums }))
+@connect(({ home: { albums } }) => ({ albums }))
 class Albums extends Component {
   constructor(props) {
     super(props);

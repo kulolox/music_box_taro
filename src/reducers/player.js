@@ -1,15 +1,22 @@
-import { SET_PLAYER_DATA } from '@/constants/player';
+import { SET_PLAYER_DATA, SET_AUDIO_INSTANCE } from '@/constants/player';
 
 const INITIAL_STATE = {
-  data: []
+  data: [],
+  currentid: '',
+  audio: null
 };
 
 export default function song(state = INITIAL_STATE, action) {
   switch (action.type) {
     case SET_PLAYER_DATA:
       return {
+        currentId: action.data.id,
+        data: action.data.data
+      };
+    case SET_AUDIO_INSTANCE:
+      return {
         ...state,
-        data: action.data
+        audio: action.data
       };
 
     default:

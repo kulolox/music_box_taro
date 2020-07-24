@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { connect } from '@tarojs/redux';
 import { Swiper, SwiperItem, Image } from '@tarojs/components';
 
-@connect(({ packageHome: { banners } }) => ({ banners }))
+@connect(({ home: { banners } }) => ({ banners }))
 class Banner extends Component {
   render() {
     const { banners } = this.props;

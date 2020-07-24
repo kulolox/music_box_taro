@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import packageHome from './packageHome';
+import home from './home';
 import songlist from './songlist';
 import player from './player';
 
 export default combineReducers({
-  packageHome,
+  home,
   song: songlist,
   player
 });

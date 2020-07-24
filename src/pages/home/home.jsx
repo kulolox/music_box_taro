@@ -4,19 +4,19 @@ import { View } from '@tarojs/components';
 import Banner from './banner/banner';
 import Albums from './albums/albums';
 
-import { getPackageHomeBanners, getPackageHomeAlbums, concatPackageHomeAlbums } from '@/actions/packageHome';
+import { getHomeBanners, getHomeAlbums, concatHomeAlbums } from '@/actions/home';
 
 @connect(
-  ({ packageHome: { banners, albums } }) => ({ banners, albums }),
+  ({ home: { banners, albums } }) => ({ banners, albums }),
   dispatch => ({
-    getPackageHomeBannersAction(callback) {
-      dispatch(getPackageHomeBanners(callback));
+    getHomeBannersAction(callback) {
+      dispatch(getHomeBanners(callback));
     },
-    getPackageHomeAlbumsAction(requestIfo, callback) {
-      dispatch(getPackageHomeAlbums(requestIfo, callback));
+    getHomeAlbumsAction(requestIfo, callback) {
+      dispatch(getHomeAlbums(requestIfo, callback));
     },
-    concatPackageHomeAlbumsAction(requestIfo, callback) {
-      dispatch(concatPackageHomeAlbums(requestIfo, callback));
+    concatHomeAlbumsAction(requestIfo, callback) {
+      dispatch(concatHomeAlbums(requestIfo, callback));
     }
   })
 )
@@ -42,10 +42,6 @@ class Index extends Component {
     enablePullDownRefresh: true
   };
 
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
-
   componentWillUnmount() {}
 
   componentDidMount() {
@@ -67,7 +63,7 @@ class Index extends Component {
   /** 滚动底部(上拉加载) **/
   onReachBottom() {
     console.log('上拉加载');
-    const { concatPackageHomeAlbumsAction } = this.props;
+    const { concatHomeAlbumsAction } = this.props;
     const { limit, order, pageNum } = this.state;
     const newPageNum = pageNum + 1;
     const requestInfo = {
@@ -75,7 +71,7 @@ class Index extends Component {
       order,
       offset: newPageNum * limit
     };
-    concatPackageHomeAlbumsAction(requestInfo, () => {
+    concatHomeAlbumsAction(requestInfo, () => {
       this.setState({
         pageNum: newPageNum
       });
@@ -94,14 +90,14 @@ class Index extends Component {
   getHomeData(callback) {
     const { limit, order, pageNum } = this.state;
     // 获取轮播数据
-    this.props.getPackageHomeBannersAction();
+    this.props.getHomeBannersAction();
     const requestInfo = {
       limit,
       order,
       offset: pageNum * limit
     };
     // 获取albums数据
-    this.props.getPackageHomeAlbumsAction(requestInfo, callback);
+    this.props.getHomeAlbumsAction(requestInfo, callback);
   }
 
   render() {

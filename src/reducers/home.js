@@ -1,23 +1,23 @@
-import { SET_PACKAGE_HOME_BANNERS, SET_PACKAGE_HOME_ALBUMS, CONCAT_PACKAGE_HOME_ALBUMS } from '@/constants/packageHome';
+import { SET_HOME_BANNERS, SET_HOME_ALBUMS, CONCAT_HOME_ALBUMS } from '@/constants/home';
 
 const INITIAL_STATE = {
   banners: [],
   albums: []
 };
 
-export default function packageHome(state = INITIAL_STATE, action) {
+export default function home(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case SET_PACKAGE_HOME_BANNERS:
+    case SET_HOME_BANNERS:
       return {
         ...state,
         banners: action.data
       };
-    case SET_PACKAGE_HOME_ALBUMS:
+    case SET_HOME_ALBUMS:
       return {
         ...state,
         albums: action.data
       };
-    case CONCAT_PACKAGE_HOME_ALBUMS:
+    case CONCAT_HOME_ALBUMS:
       return {
         ...state,
         albums: action.data

@@ -1,4 +1,4 @@
-import { SET_PACKAGE_HOME_BANNERS, SET_PACKAGE_HOME_ALBUMS, CONCAT_PACKAGE_HOME_ALBUMS } from '@/constants/packageHome';
+import { SET_HOME_BANNERS, SET_HOME_ALBUMS, CONCAT_HOME_ALBUMS } from '@/constants/home';
 import { getBanner, getAlbums } from '@/api/get';
 
 // 格式化专辑数据
@@ -10,7 +10,7 @@ const formateAlbums = t => ({
   playCount: t.playCount
 });
 
-export const getPackageHomeBanners = () => async dispatch => {
+export const getHomeBanners = () => async dispatch => {
   const {
     data: { banners }
   } = await getBanner(0);
@@ -19,12 +19,12 @@ export const getPackageHomeBanners = () => async dispatch => {
     imageUrl: t.imageUrl
   }));
   dispatch({
-    type: SET_PACKAGE_HOME_BANNERS,
+    type: SET_HOME_BANNERS,
     data: newData
   });
 };
 
-export const getPackageHomeAlbums = (pageInfo, callback) => async dispatch => {
+export const getHomeAlbums = (pageInfo, callback) => async dispatch => {
   const {
     data: { playlists }
   } = await getAlbums(pageInfo);
@@ -32,15 +32,15 @@ export const getPackageHomeAlbums = (pageInfo, callback) => async dispatch => {
   const newData = playlists.map(formateAlbums);
 
   dispatch({
-    type: SET_PACKAGE_HOME_ALBUMS,
+    type: SET_HOME_ALBUMS,
     data: newData
   });
   callback && callback();
 };
 
-export const concatPackageHomeAlbums = (pageInfo, callback) => async (dispatch, getState) => {
+export const concatHomeAlbums = (pageInfo, callback) => async (dispatch, getState) => {
   const {
-    packageHome: { albums }
+    home: { albums }
   } = getState();
   const {
     data: { playlists }
@@ -49,7 +49,7 @@ export const concatPackageHomeAlbums = (pageInfo, callback) => async (dispatch, 
   const newData = albums.concat(playlists.map(formateAlbums));
 
   dispatch({
-    type: CONCAT_PACKAGE_HOME_ALBUMS,
+    type: CONCAT_HOME_ALBUMS,
     data: newData
   });
   callback && callback();

@@ -8,14 +8,7 @@ import { setPlayer } from '@/actions/player';
 
 import cssStyles from './list.module.scss';
 
-@connect(
-  ({ song: { list } }) => ({ list }),
-  dispatch => ({
-    setPlayerAction() {
-      dispatch(setPlayer());
-    }
-  })
-)
+@connect(({ song: { list } }) => ({ list }))
 class List extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +17,6 @@ class List extends Component {
 
   goToSong(id, flag) {
     if (!flag) return;
-    this.props.setPlayerAction();
     Taro.navigateTo({
       url: `/pages/songPlay/songPlay?id=${id}`
     });
