@@ -1,0 +1,40 @@
+.player {
+  .header {
+    position: relative;
+    height: 60vh;
+    .coverImg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .message {
+    display: flex;
+    align-items: center;
+    .time {
+      font-size: 24px;
+      width: auto;
+      display: flex;
+      .currentTime {
+        color: orange;
+        &::after {
+          content: '/';
+          margin: 0 4px;
+        }
+      }
+      .duration {
+        color: #333;
+      }
+    }
+    .progress {
+      flex: 1;
+    }
+  }
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+}

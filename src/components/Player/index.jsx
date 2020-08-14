@@ -1,8 +1,9 @@
 import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
-import { View } from '@tarojs/components';
+import { View, Image } from '@tarojs/components';
 import { AtButton, AtSlider } from 'taro-ui';
-
+import cssStyles from './index.module.scss';
+import Duration from '../Duration';
 /**
  * 播放器核心组件
  * 播放器接受传入单个音乐数据和音乐列表
@@ -58,22 +59,30 @@ export default class Player extends Component {
     // 音乐播放器事件
     this.bgAudio.onEnded(() => {
       console.log('音频自然播放完');
-      if (this.setState.loop) {
-        this.bgAudio.startTime = 0; // 回到开头
-      } else if (this.hasNextSong()) {
-        this.goNextSong();
+      if (this.state.loop) {
+        console.log('单曲循环');
+        this.bgAudio.src = '';
+        this.play();
       } else {
-        this.setState({
-          playing: false
-        });
+        console.log('下一曲');
+        if (this.hasNextSong()) {
+          this.goNextSong();
+        } else {
+          this.setState({
+            playing: false
+          });
+        }
       }
     });
     this.bgAudio.onTimeUpdate(() => {
-      // 获取当前播放进度
-      this.setState({
-        currentTime: this.bgAudio.currentTime,
-        duration: this.bgAudio.duration
-      });
+      // 拖拽进度时不刷新
+      if (!this.state.seeking) {
+        // 获取当前播放进度
+        this.setState({
+          currentTime: this.bgAudio.currentTime,
+          duration: this.bgAudio.duration
+        });
+      }
     });
     this.bgAudio.onNext(() => {
       this.goNextSong();
@@ -83,8 +92,24 @@ export default class Player extends Component {
     });
   }
 
+  onSeekChange = e => {
+    console.log('changed:', e);
+    this.setState({
+      currentTime: e,
+      seeking: false
+    });
+    this.bgAudio.seek(e);
+  };
+
+  onSeekChanging = e => {
+    this.setState({
+      currentTime: e,
+      seeking: true
+    });
+  };
+
   hasNextSong = () => {
-    return this.currentIndex < this.props.data.length - 1;
+    return this.state.currentIndex < this.props.data.length - 1;
   };
 
   play = () => {
@@ -97,6 +122,7 @@ export default class Player extends Component {
         coverImgUrl: data.coverImgUrl,
         singer: data.authors
       });
+      Taro.setNavigationBarTitle = data.name;
     } else {
       Object.assign(this.bgAudio, {
         title: data[currentIndex].name,
@@ -104,6 +130,7 @@ export default class Player extends Component {
         coverImgUrl: data[currentIndex].coverImgUrl,
         singer: data[currentIndex].authors
       });
+      Taro.setNavigationBarTitle = data[currentIndex].name;
     }
     if (playing) {
       this.bgAudio.play();
@@ -153,28 +180,19 @@ export default class Player extends Component {
     this.setState({ currentIndex: index, playing: true }, this.play);
   };
 
-  onSeekChange = e => {
-    console.log('changed:', e);
-    this.setState({
-      currentTime: e
-    });
-    this.bgAudio.seek(e);
-  };
-  onSeekChanging = e => {
-    console.log('changing:', e);
-    this.setState({
-      currentTime: e
-    });
-  };
-
   render() {
     const { data } = this.props;
-    const { currentIndex, currentTime, duration } = this.state;
+    const { currentTime, duration, currentIndex } = this.state;
     return (
-      <View>
-        <View>{data[currentIndex].name}</View>
-        <View>
-          <View style={{ background: '#eee' }}>
+      <View className={cssStyles.player}>
+        <View className={cssStyles.header}>
+          <View className={cssStyles.coverImg}>
+            <Image src={data[currentIndex].coverImgUrl} />
+          </View>
+        </View>
+
+        <View className={cssStyles.message}>
+          <View className={cssStyles.progress}>
             <AtSlider
               activeColor='#ddff00'
               backgroundColor='#ff00dd'
@@ -187,14 +205,17 @@ export default class Player extends Component {
               onChanging={this.onSeekChanging}
             />
           </View>
+          <View className={cssStyles.time}>
+            <View className={cssStyles.currentTime}>
+              <Duration seconds={currentTime} />
+            </View>
+            <View className={cssStyles.duration}>
+              <Duration seconds={duration} />
+            </View>
+          </View>
         </View>
-        <View
-          style={{
-            marginTop: '200px',
-            display: 'flex',
-            justifyContent: 'center'
-          }}
-        >
+
+        <View className={cssStyles.footer}>
           <AtButton onClick={this.goPrevSong}>上一曲</AtButton>
           <AtButton onClick={this.togglePlay}>{!playing ? '播放' : '暂停'}</AtButton>
           <AtButton onClick={this.goNextSong}>下一曲</AtButton>
