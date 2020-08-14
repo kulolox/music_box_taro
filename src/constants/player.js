@@ -1,1 +1,0 @@
-export const SET_PLAYER_DATA = 'SET_PLAYER_DATA';

@@ -2,6 +2,7 @@ import { SET_SONG_INFO, SET_SONG_LIST } from '@/constants/songlist';
 import { getPlaylist, getSongDetail } from '@/api/get';
 import { checkMusic, arraySplit } from '@/utils/tools';
 
+// 获取歌单信息
 export const getSongInfo = (id, callback) => async dispatch => {
   const {
     data: { playlist }
@@ -22,6 +23,7 @@ export const getSongInfo = (id, callback) => async dispatch => {
   callback && callback();
 };
 
+// 获取歌单歌曲列表
 export const getSongList = callback => async (dispatch, getState) => {
   const {
     song: { songInfo }
@@ -42,13 +44,12 @@ export const getSongList = callback => async (dispatch, getState) => {
     privileges = privileges.concat(t.data.privileges);
   });
 
-  let list = [];
-  // 构造list数据
-  list = songs.map((t, i) => ({
+  const list = songs.map((t, i) => ({
     id: privileges[i].id,
     name: t.name,
     seconds: t.dt / 1000,
     authors: t.ar.map(j => j.name).join('，'),
+    coverImgUrl: t.al.picUrl,
     canPlay: checkMusic(privileges[i])
   }));
 

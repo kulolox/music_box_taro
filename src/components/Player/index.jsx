@@ -1,97 +1,116 @@
 import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
 import { View } from '@tarojs/components';
-import { AtButton } from 'taro-ui';
-import { connect } from '@tarojs/redux';
-import { setAudioInstance } from '@/actions/player';
+import { AtButton, AtSlider } from 'taro-ui';
 
 /**
  * 播放器核心组件
- * 设计：播放器组件应该是纯粹的，不应有复杂的UI，接受用户输入的相关参数，返回用户需要的相关数据
+ * 播放器接受传入单个音乐数据和音乐列表
+ * 播放器功能，播放，暂停，上一曲，下一曲，进度拖拽，音量调整，自动下一曲，单曲循环还是列表循环
+ *
  */
-@connect(
-  ({ player: { data, currentId } }) => ({ data, currentId }),
-  dispatch => ({
-    setAudioInstanceAction(instance, callback) {
-      dispatch(setAudioInstance(instance, callback));
-    }
-  })
-)
-class Player extends Component {
+export default class Player extends Component {
   static propTypes = {
-    url: PropTypes.string.isRequired,
-    startTime: PropTypes.number,
-    autoplay: PropTypes.bool,
-    loop: PropTypes.bool,
-    volume: PropTypes.number,
-    playbackRate: PropTypes.number
+    data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    songId: PropTypes.string
   };
 
   static defaultpropTypes = {
-    startTime: 0,
-    autoplay: false,
-    loop: false,
-    volume: 1,
-    playbackRate: 1
+    data: [],
+    songId: ''
   };
 
   constructor(props) {
     super(props);
-    this.bgAudio = Taro.getBackgroundAudioManager();
+    this.bgAudio = Taro.getBackgroundAudioManager(); // 初始化播放器
     this.state = {
-      currentIndex: 0,
-      playing: false,
-      currentTime: 0,
-      duration: 0
+      currentTime: 0, // 当前播放秒数
+      playing: false, // 播放状态
+      seeking: false, // 触发进度条数据变化flag
+      duration: 0, // 音频总时长
+      played: 0, // 音频播放进度
+      currentIndex: -1, // 当前歌曲索引
+      loop: false, // 单曲循环还是顺序播放
+      volums: 0.75 // 音量大小0-1
     };
   }
 
-  componentWillMount() {}
-
   componentDidMount() {
-    const { autoplay, loop, playbackRate, startTime, currentId, data } = this.props;
-
-    // 初始化播放器
-    Object.assign(this.bgAudio, {
-      loop,
-      playbackRate,
-      startTime
-    });
-
-    const index = data.findIndex(t => t.id == currentId);
-    this.bgAudio.title = data[index].name;
-    this.bgAudio.src = data[index].url;
-    console.log('mount audio:', this.bgAudio);
-    this.setState(
-      {
-        currentIndex: index
-      },
-      () => {
-        if (autoplay) {
-          this.play();
-        }
+    const { data, songId } = this.props;
+    if (songId) {
+      const index = data.findIndex(t => t.id == songId);
+      this.setState(
+        {
+          currentIndex: index,
+          playing: true
+        },
+        this.play
+      );
+    } else {
+      this.setState(
+        {
+          currentIndex: 0,
+          playing: true
+        },
+        this.play
+      );
+    }
+    // 音乐播放器事件
+    this.bgAudio.onEnded(() => {
+      console.log('音频自然播放完');
+      if (this.setState.loop) {
+        this.bgAudio.startTime = 0; // 回到开头
+      } else if (this.hasNextSong()) {
+        this.goNextSong();
+      } else {
+        this.setState({
+          playing: false
+        });
       }
-    );
+    });
+    this.bgAudio.onTimeUpdate(() => {
+      // 获取当前播放进度
+      this.setState({
+        currentTime: this.bgAudio.currentTime,
+        duration: this.bgAudio.duration
+      });
+    });
+    this.bgAudio.onNext(() => {
+      this.goNextSong();
+    });
+    this.bgAudio.onPrev(() => {
+      this.goPrevSong();
+    });
   }
 
-  componentDidShow() {
-    console.log('show');
-  }
-
-  componentDidHide() {}
-
-  componentWillUnmount() {
-    this.innerAudioContext.destroy();
-  }
+  hasNextSong = () => {
+    return this.currentIndex < this.props.data.length - 1;
+  };
 
   play = () => {
     const { data } = this.props;
-    const { currentIndex } = this.state;
-    this.bgAudio.title = data[currentIndex].name;
-    this.bgAudio.src = data[currentIndex].url;
-    this.bgAudio.play();
+    const { currentIndex, playing } = this.state;
+    if (!Array.isArray(data)) {
+      Object.assign(this.bgAudio, {
+        title: data.name,
+        src: data.url,
+        coverImgUrl: data.coverImgUrl,
+        singer: data.authors
+      });
+    } else {
+      Object.assign(this.bgAudio, {
+        title: data[currentIndex].name,
+        src: data[currentIndex].url,
+        coverImgUrl: data[currentIndex].coverImgUrl,
+        singer: data[currentIndex].authors
+      });
+    }
+    if (playing) {
+      this.bgAudio.play();
+    }
   };
 
+  // 播放暂停
   togglePlay = () => {
     this.setState(
       prevState => ({
@@ -112,32 +131,63 @@ class Player extends Component {
     const { currentIndex } = this.state;
     if (currentIndex >= data.length - 1) {
       Taro.showToast({
+        icon: 'none',
         title: '无下一曲'
       });
       return;
     }
     const index = currentIndex + 1;
-    this.setState({ currentIndex: index, playing: true }, () => this.play());
+    this.setState({ currentIndex: index, playing: true }, this.play);
   };
 
   goPrevSong = () => {
     const { currentIndex } = this.state;
     if (currentIndex === 0) {
       Taro.showToast({
+        icon: 'none',
         title: '无上一曲'
       });
       return;
     }
     const index = currentIndex - 1;
-    this.setState({ currentIndex: index, playing: true }, () => this.play());
+    this.setState({ currentIndex: index, playing: true }, this.play);
+  };
+
+  onSeekChange = e => {
+    console.log('changed:', e);
+    this.setState({
+      currentTime: e
+    });
+    this.bgAudio.seek(e);
+  };
+  onSeekChanging = e => {
+    console.log('changing:', e);
+    this.setState({
+      currentTime: e
+    });
   };
 
   render() {
     const { data } = this.props;
-    const { currentIndex } = this.state;
+    const { currentIndex, currentTime, duration } = this.state;
     return (
       <View>
         <View>{data[currentIndex].name}</View>
+        <View>
+          <View style={{ background: '#eee' }}>
+            <AtSlider
+              activeColor='#ddff00'
+              backgroundColor='#ff00dd'
+              blockColor='#00ffdd'
+              blockSize={12}
+              min={0}
+              max={duration}
+              value={currentTime}
+              onChange={this.onSeekChange}
+              onChanging={this.onSeekChanging}
+            />
+          </View>
+        </View>
         <View
           style={{
             marginTop: '200px',
@@ -153,5 +203,3 @@ class Player extends Component {
     );
   }
 }
-
-export default Player;
