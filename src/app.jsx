@@ -1,4 +1,5 @@
 import 'taro-ui/dist/style/index.scss';
+import '@/assets/iconfonts/iconfont.scss'; // 全局引入字体图标文件
 import Taro, { Component } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
 
@@ -18,7 +19,7 @@ const store = configStore();
 
 class App extends Component {
   config = {
-    pages: ['pages/home/home', 'pages/songlist/songlist', 'pages/songPlay/songPlay', 'pages/demo/index'],
+    pages: ['pages/home/home', 'pages/songlist/songlist', 'pages/songPlay/songPlay'],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',

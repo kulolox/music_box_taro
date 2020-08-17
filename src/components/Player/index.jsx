@@ -1,18 +1,17 @@
 import Taro, { Component } from '@tarojs/taro';
 import PropTypes from 'prop-types';
 import { View, Image } from '@tarojs/components';
-import { AtButton, AtSlider } from 'taro-ui';
+import { AtSlider, AtIcon } from 'taro-ui';
 import cssStyles from './index.module.scss';
 import Duration from '../Duration';
 /**
  * 播放器核心组件
  * 播放器接受传入单个音乐数据和音乐列表
  * 播放器功能，播放，暂停，上一曲，下一曲，进度拖拽，音量调整，自动下一曲，单曲循环还是列表循环
- *
  */
 export default class Player extends Component {
   static propTypes = {
-    data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    data: PropTypes.array,
     songId: PropTypes.string
   };
 
@@ -61,7 +60,7 @@ export default class Player extends Component {
       console.log('音频自然播放完');
       if (this.state.loop) {
         console.log('单曲循环');
-        this.bgAudio.src = '';
+        this.bgAudio.src = null;
         this.play();
       } else {
         console.log('下一曲');
@@ -115,23 +114,15 @@ export default class Player extends Component {
   play = () => {
     const { data } = this.props;
     const { currentIndex, playing } = this.state;
-    if (!Array.isArray(data)) {
-      Object.assign(this.bgAudio, {
-        title: data.name,
-        src: data.url,
-        coverImgUrl: data.coverImgUrl,
-        singer: data.authors
-      });
-      Taro.setNavigationBarTitle = data.name;
-    } else {
-      Object.assign(this.bgAudio, {
-        title: data[currentIndex].name,
-        src: data[currentIndex].url,
-        coverImgUrl: data[currentIndex].coverImgUrl,
-        singer: data[currentIndex].authors
-      });
-      Taro.setNavigationBarTitle = data[currentIndex].name;
-    }
+    Object.assign(this.bgAudio, {
+      title: data[currentIndex].name,
+      src: data[currentIndex].url,
+      coverImgUrl: data[currentIndex].coverImgUrl,
+      singer: data[currentIndex].authors
+    });
+    Taro.setNavigationBarTitle({
+      title: data[currentIndex].name
+    });
     if (playing) {
       this.bgAudio.play();
     }
@@ -182,21 +173,24 @@ export default class Player extends Component {
 
   render() {
     const { data } = this.props;
-    const { currentTime, duration, currentIndex } = this.state;
+    const { currentTime, duration, currentIndex, playing } = this.state;
     return (
       <View className={cssStyles.player}>
         <View className={cssStyles.header}>
           <View className={cssStyles.coverImg}>
-            <Image src={data[currentIndex].coverImgUrl} />
+            <Image className={cssStyles.img} src={data[currentIndex].coverImgUrl} />
           </View>
         </View>
 
         <View className={cssStyles.message}>
+          <View className={cssStyles.currentTime}>
+            <Duration seconds={currentTime} />
+          </View>
           <View className={cssStyles.progress}>
             <AtSlider
-              activeColor='#ddff00'
-              backgroundColor='#ff00dd'
-              blockColor='#00ffdd'
+              activeColor='#5169ec'
+              backgroundColor='#dcdcdc'
+              blockColor='#5169ec'
               blockSize={12}
               min={0}
               max={duration}
@@ -205,20 +199,25 @@ export default class Player extends Component {
               onChanging={this.onSeekChanging}
             />
           </View>
-          <View className={cssStyles.time}>
-            <View className={cssStyles.currentTime}>
-              <Duration seconds={currentTime} />
-            </View>
-            <View className={cssStyles.duration}>
-              <Duration seconds={duration} />
-            </View>
+          <View className={cssStyles.duration}>
+            <Duration seconds={duration} />
           </View>
         </View>
 
         <View className={cssStyles.footer}>
-          <AtButton onClick={this.goPrevSong}>上一曲</AtButton>
-          <AtButton onClick={this.togglePlay}>{!playing ? '播放' : '暂停'}</AtButton>
-          <AtButton onClick={this.goNextSong}>下一曲</AtButton>
+          <View className={cssStyles.button} onClick={this.goPrevSong}>
+            <AtIcon prefixClass='icon' value='prev' color='#333' size={24} />
+          </View>
+          <View className={cssStyles.button} onClick={this.togglePlay}>
+            {!playing ? (
+              <AtIcon prefixClass='icon' value='play' color='#333' size={24} />
+            ) : (
+              <AtIcon prefixClass='icon' value='pause' color='#333' size={24} />
+            )}
+          </View>
+          <View className={cssStyles.button} onClick={this.goNextSong}>
+            <AtIcon prefixClass='icon' value='next' color='#333' size={24} />
+          </View>
         </View>
       </View>
     );

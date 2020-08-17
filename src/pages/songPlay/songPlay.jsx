@@ -13,17 +13,12 @@ class SongPlay extends Component {
   };
 
   state = {
-    id: '',
     data: [] // 歌曲列表
   };
 
   async componentDidMount() {
     Taro.showLoading({
       title: '加载中...'
-    });
-    const { id } = this.$router.params;
-    this.setState({
-      id
     });
     await this.getSongDetail();
     Taro.hideLoading();
@@ -47,16 +42,10 @@ class SongPlay extends Component {
     });
   };
 
-  componentDidShow() {}
-
-  componentDidHide() {}
-
-  componentWillUnmount() {}
-
   render() {
-    const { data, id } = this.state;
+    const { data } = this.state;
     if (data.length === 0) return null;
-    console.log('id 外：', id);
+    const { id } = this.$router.params;
     return <Player data={data} songId={id} />;
   }
 }

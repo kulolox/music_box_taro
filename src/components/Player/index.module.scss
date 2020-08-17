@@ -1,32 +1,25 @@
 .player {
   .header {
     position: relative;
-    height: 60vh;
     .coverImg {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      width: 70%;
+      margin: 80px auto 0;
+      .img {
+        width: 100%;
+      }
     }
   }
 
   .message {
     display: flex;
     align-items: center;
-    .time {
-      font-size: 24px;
-      width: auto;
-      display: flex;
-      .currentTime {
-        color: orange;
-        &::after {
-          content: '/';
-          margin: 0 4px;
-        }
-      }
-      .duration {
-        color: #333;
-      }
+    padding: 20px;
+    font-size: 24px;
+    .currentTime {
+      color: #5169ec;
+    }
+    .duration {
+      color: #333;
     }
     .progress {
       flex: 1;
@@ -36,5 +29,10 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
+    .button {
+      background: #f2f2f2;
+      border: 1px solid #dcdcdc;
+      padding: 20px;
+    }
   }
 }
