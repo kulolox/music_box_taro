@@ -35,7 +35,6 @@ export default class Player extends Component {
       duration: 0, // 音频总时长
       played: 0, // 音频播放进度
       currentIndex: -1, // 当前歌曲索引
-      loop: false, // 单曲循环还是顺序播放
       volums: 0.75 // 音量大小0-1
     };
   }
@@ -63,19 +62,13 @@ export default class Player extends Component {
     // 音乐播放器事件
     this.bgAudio.onEnded(() => {
       console.log('音频自然播放完');
-      if (this.state.loop) {
-        console.log('单曲循环');
-        this.bgAudio.src = null;
-        this.play();
+      if (this.hasNextSong()) {
+        this.goNextSong();
       } else {
-        console.log('下一曲');
-        if (this.hasNextSong()) {
-          this.goNextSong();
-        } else {
-          this.setState({
-            playing: false
-          });
-        }
+        //TODO 最后一曲(从头播还是停止)
+        this.setState({
+          playing: false
+        });
       }
     });
     this.bgAudio.onTimeUpdate(() => {
