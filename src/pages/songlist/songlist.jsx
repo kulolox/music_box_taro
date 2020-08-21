@@ -23,13 +23,13 @@ class SongList extends Component {
     navigationBarBackgroundColor: '#5169ec',
     navigationBarTextStyle: 'white'
   };
-  componentDidShow() {
-    const { id } = this.$router.params;
+  componentDidMount() {
     Taro.showLoading({
       title: '加载中...'
     });
+    const { albumId } = this.$router.params;
     // TODO 代码需要优化，最好能以Promise的形式调用
-    this.props.getSongInfoAction(id, () => {
+    this.props.getSongInfoAction(albumId, () => {
       this.props.getSongListAction(() => {
         Taro.hideLoading();
       });

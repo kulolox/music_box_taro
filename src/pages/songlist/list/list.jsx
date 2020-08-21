@@ -15,10 +15,10 @@ class List extends Component {
     this.goToSong = this.goToSong.bind(this);
   }
 
-  goToSong(id, flag) {
+  goToSong(songId, flag) {
     if (!flag) return;
     Taro.navigateTo({
-      url: `/pages/songPlay/songPlay?id=${id}`
+      url: `/pages/songPlay/songPlay?songId=${songId}`
     });
   }
 

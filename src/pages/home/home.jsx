@@ -34,7 +34,7 @@ class Index extends Component {
   }
 
   config = {
-    navigationBarTitleText: 'KULOLO 云音乐',
+    navigationBarTitleText: 'K 云音乐',
     navigationBarBackgroundColor: '#5169ec',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'dark',
@@ -55,10 +55,6 @@ class Index extends Component {
       });
     });
   }
-
-  componentDidShow() {}
-
-  componentDidHide() {}
 
   /** 滚动底部(上拉加载) **/
   onReachBottom() {

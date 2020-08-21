@@ -4,6 +4,11 @@ import { View, Image } from '@tarojs/components';
 import { AtSlider, AtIcon } from 'taro-ui';
 import cssStyles from './index.module.scss';
 import Duration from '../Duration';
+
+const buttonColor = '#333';
+const buttonLagre = 42;
+const buttonNomal = 24;
+
 /**
  * 播放器核心组件
  * 播放器接受传入单个音乐数据和音乐列表
@@ -176,6 +181,10 @@ export default class Player extends Component {
     const { currentTime, duration, currentIndex, playing } = this.state;
     return (
       <View className={cssStyles.player}>
+        <View className={cssStyles.bgBox}>
+          <Image className={cssStyles.bgImage} src={data[currentIndex].coverImgUrl} />
+        </View>
+
         <View className={cssStyles.header}>
           <View className={cssStyles.coverImg}>
             <Image className={cssStyles.img} src={data[currentIndex].coverImgUrl} />
@@ -205,18 +214,20 @@ export default class Player extends Component {
         </View>
 
         <View className={cssStyles.footer}>
-          <View className={cssStyles.button} onClick={this.goPrevSong}>
-            <AtIcon prefixClass='icon' value='prev' color='#333' size={24} />
-          </View>
-          <View className={cssStyles.button} onClick={this.togglePlay}>
-            {!playing ? (
-              <AtIcon prefixClass='icon' value='play' color='#333' size={24} />
-            ) : (
-              <AtIcon prefixClass='icon' value='pause' color='#333' size={24} />
-            )}
-          </View>
-          <View className={cssStyles.button} onClick={this.goNextSong}>
-            <AtIcon prefixClass='icon' value='next' color='#333' size={24} />
+          <View className={cssStyles.buttons}>
+            <View className={cssStyles.button} onClick={this.goPrevSong}>
+              <AtIcon prefixClass='icon' value='prev' color={buttonColor} size={buttonNomal} />
+            </View>
+            <View className={cssStyles.button} onClick={this.togglePlay}>
+              {!playing ? (
+                <AtIcon prefixClass='icon' value='play' color={buttonColor} size={buttonLagre} />
+              ) : (
+                <AtIcon prefixClass='icon' value='pause' color={buttonColor} size={buttonLagre} />
+              )}
+            </View>
+            <View className={cssStyles.button} onClick={this.goNextSong}>
+              <AtIcon prefixClass='icon' value='next' color={buttonColor} size={buttonNomal} />
+            </View>
           </View>
         </View>
       </View>

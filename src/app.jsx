@@ -3,8 +3,6 @@ import '@/assets/iconfonts/iconfont.scss'; // 全局引入字体图标文件
 import Taro, { Component } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
 
-import Index from './pages/index';
-
 import configStore from './store';
 
 import './app.scss';
@@ -23,7 +21,7 @@ class App extends Component {
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
+      navigationBarTitleText: 'K 云音乐',
       navigationBarTextStyle: 'black'
     },
     requiredBackgroundModes: ['audio'],
@@ -34,22 +32,10 @@ class App extends Component {
     }
   };
 
-  componentDidMount() {}
-
-  componentDidShow() {}
-
-  componentDidHide() {}
-
-  componentDidCatchError() {}
-
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
   render() {
-    return (
-      <Provider store={store}>
-        <Index />
-      </Provider>
-    );
+    return <Provider store={store} />;
   }
 }
 

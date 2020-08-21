@@ -2,6 +2,7 @@ import { SET_SONG_INFO, SET_SONG_LIST } from '@/constants/songlist';
 
 const INITIAL_STATE = {
   songInfo: {
+    albumId: '',
     name: '',
     nickname: '',
     coverImgUrl: '',

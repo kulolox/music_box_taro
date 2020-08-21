@@ -9,6 +9,7 @@ export const getSongInfo = (id, callback) => async dispatch => {
   } = await getPlaylist(id);
 
   const newData = {
+    albumId: playlist.id,
     name: playlist.name,
     nickname: playlist.creator.nickname,
     coverImgUrl: playlist.coverImgUrl,

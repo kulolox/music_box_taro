@@ -12,9 +12,9 @@ class Albums extends Component {
     this.goToSong = this.goToSong.bind(this);
   }
 
-  goToSong(id) {
+  goToSong(albumId) {
     Taro.navigateTo({
-      url: `/pages/songlist/songlist?id=${id}`
+      url: `/pages/songlist/songlist?albumId=${albumId}`
     });
   }
 
