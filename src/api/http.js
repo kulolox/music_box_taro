@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro';
 
-const BASE_URL = 'https://api.kulolox.cn/';
+const BASE_URL = 'https://api.xujianfeng.club/';
 
 class HttpRequest {
   async request(params, method = 'GET') {

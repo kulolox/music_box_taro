@@ -4,6 +4,7 @@ import { View, Image } from '@tarojs/components';
 import { AtSlider, AtIcon } from 'taro-ui';
 import cssStyles from './index.module.scss';
 import Duration from '../Duration';
+import { getSongUrl } from '@/api/get';
 
 const buttonColor = '#333';
 const buttonLagre = 42;
@@ -112,11 +113,14 @@ export default class Player extends Component {
   play = () => {
     const { data } = this.props;
     const { currentIndex, playing } = this.state;
-    Object.assign(this.bgAudio, {
-      title: data[currentIndex].name,
-      src: data[currentIndex].url,
-      coverImgUrl: data[currentIndex].coverImgUrl,
-      singer: data[currentIndex].authors
+    // 根据id重新获取播放url
+    getSongUrl(data[currentIndex].id).then(res => {
+      Object.assign(this.bgAudio, {
+        title: data[currentIndex].name,
+        src: res.data.data[0].url,
+        coverImgUrl: data[currentIndex].coverImgUrl,
+        singer: data[currentIndex].authors
+      });
     });
     Taro.setNavigationBarTitle({
       title: data[currentIndex].name

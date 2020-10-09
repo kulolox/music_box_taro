@@ -28,7 +28,7 @@ class List extends Component {
       <View className={cssStyles['list-box']}>
         <View className={cssStyles.list}>
           {list.map((t, i) => (
-            <View onClick={() => this.goToSong(t.id, t.canPlay)} className={cssStyles.item} key={t.id}>
+            <View onClick={() => this.goToSong(t.id, t.url)} className={cssStyles.item} key={t.id}>
               <View className={cssStyles.num}>{i + 1}</View>
               <View className={cssStyles.info}>
                 <LineEllipsis
@@ -45,7 +45,7 @@ class List extends Component {
                   text={t.authors}
                 />
               </View>
-              {t.canPlay ? (
+              {t.url ? (
                 <Duration
                   customStyles={{
                     flex: 1,
@@ -62,7 +62,7 @@ class List extends Component {
                   无版权
                 </Text>
               )}
-              <View className={cssStyles.icon}>{t.canPlay && <AtIcon value='play' size='20' />}</View>
+              <View className={cssStyles.icon}>{t.url && <AtIcon value='play' size='20' />}</View>
             </View>
           ))}
         </View>
