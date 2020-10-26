@@ -121,13 +121,14 @@ export default class Player extends Component {
         coverImgUrl: data[currentIndex].coverImgUrl,
         singer: data[currentIndex].authors
       });
+      // 文件准备完毕再播放
+      if (playing) {
+        this.bgAudio.play();
+      }
     });
     Taro.setNavigationBarTitle({
       title: data[currentIndex].name
     });
-    if (playing) {
-      this.bgAudio.play();
-    }
   };
 
   // 播放暂停

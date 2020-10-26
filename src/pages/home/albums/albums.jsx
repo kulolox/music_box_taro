@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { connect } from '@tarojs/redux';
+import { AtIcon } from 'taro-ui';
 import { Image, View, Text } from '@tarojs/components';
 import LineEllipsis from '@/components/LineEllipsis';
 
@@ -32,7 +33,8 @@ class Albums extends Component {
                   <LineEllipsis text={album.nickname} />
                 </View>
                 <View className={cssStyles.playCount}>
-                  <Text>{album.playCount}</Text>
+                  <AtIcon prefixClass='icon' value='play' color="#fff" size={12} />
+                  <Text style={{ marginLeft: '2px' }}>{album.playCount}</Text>
                 </View>
               </View>
               <LineEllipsis text={album.name} />

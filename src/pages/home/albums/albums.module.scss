@@ -2,9 +2,10 @@
 
 .album {
   padding: 0 px2px(16px);
+  margin-top: px2px(16px);
   .title {
     font-size: px2px(18px);
-    margin: px2px(16px) 0;
+    margin-bottom: px2px(16px);
   }
   .album-list {
     display: flex;
