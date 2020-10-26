@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import home from './home';
-import songlist from './songlist';
+import albums from './albums';
 
 export default combineReducers({
   home,
-  song: songlist
+  albums
 });

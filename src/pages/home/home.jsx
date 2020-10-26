@@ -4,19 +4,19 @@ import { View } from '@tarojs/components';
 import Banner from './banner/banner';
 import Albums from './albums/albums';
 
-import { getHomeBanners, getHomeAlbums, concatHomeAlbums } from '@/actions/home';
+import { getBanners, getAlbums, concatAlbums } from '@/actions/home';
 
 @connect(
   ({ home: { banners, albums } }) => ({ banners, albums }),
   dispatch => ({
-    getHomeBannersAction(callback) {
-      dispatch(getHomeBanners(callback));
+    getBannersAction(callback) {
+      dispatch(getBanners(callback));
     },
-    getHomeAlbumsAction(requestIfo, callback) {
-      dispatch(getHomeAlbums(requestIfo, callback));
+    getAlbumsAction(requestIfo, callback) {
+      dispatch(getAlbums(requestIfo, callback));
     },
-    concatHomeAlbumsAction(requestIfo, callback) {
-      dispatch(concatHomeAlbums(requestIfo, callback));
+    concatAlbumsAction(requestIfo, callback) {
+      dispatch(concatAlbums(requestIfo, callback));
     }
   })
 )
@@ -30,7 +30,7 @@ class Index extends Component {
       order: 'hot',
       offset: 0
     };
-    this.getHomeData = this.getHomeData.bind(this);
+    this.getData = this.getData.bind(this);
   }
 
   config = {
@@ -48,7 +48,7 @@ class Index extends Component {
     Taro.showLoading({
       title: '加载中...'
     });
-    this.getHomeData(() => {
+    this.getData(() => {
       Taro.hideLoading();
       this.setState({
         pageNum: 1
@@ -59,7 +59,6 @@ class Index extends Component {
   /** 滚动底部(上拉加载) **/
   onReachBottom() {
     console.log('上拉加载');
-    const { concatHomeAlbumsAction } = this.props;
     const { limit, order, pageNum } = this.state;
     const newPageNum = pageNum + 1;
     const requestInfo = {
@@ -67,7 +66,7 @@ class Index extends Component {
       order,
       offset: newPageNum * limit
     };
-    concatHomeAlbumsAction(requestInfo, () => {
+    this.props.concatAlbumsAction(requestInfo, () => {
       this.setState({
         pageNum: newPageNum
       });
@@ -78,22 +77,22 @@ class Index extends Component {
   onPullDownRefresh() {
     console.log('下拉刷新');
 
-    this.getHomeData(() => {
+    this.getData(() => {
       Taro.stopPullDownRefresh();
     });
   }
 
-  getHomeData(callback) {
+  getData(callback) {
     const { limit, order, pageNum } = this.state;
     // 获取轮播数据
-    this.props.getHomeBannersAction();
+    this.props.getBannersAction();
     const requestInfo = {
       limit,
       order,
       offset: pageNum * limit
     };
     // 获取albums数据
-    this.props.getHomeAlbumsAction(requestInfo, callback);
+    this.props.getAlbumsAction(requestInfo, callback);
   }
 
   render() {

@@ -14,7 +14,7 @@ class Albums extends Component {
 
   goToSong(albumId) {
     Taro.navigateTo({
-      url: `/pages/songlist/songlist?albumId=${albumId}`
+      url: `/pages/album/album?albumId=${albumId}`
     });
   }
 
@@ -29,7 +29,7 @@ class Albums extends Component {
               <View className={cssStyles['item-content']}>
                 <Image className={cssStyles.coverimg} src={album.coverImgUrl} mode='aspectFill' lazyLoad />
                 <View className={cssStyles['nick-name']}>
-                  <Text>{album.nickname}</Text>
+                  <LineEllipsis text={album.nickname} />
                 </View>
                 <View className={cssStyles.playCount}>
                   <Text>{album.playCount}</Text>

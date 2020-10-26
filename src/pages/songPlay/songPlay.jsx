@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { connect } from '@tarojs/redux';
 import Player from '@/components/Player';
 
-@connect(({ song: { list } }) => ({ list }))
+@connect(({ albums: { list } }) => ({ list }))
 class SongPlay extends Component {
   config = {
     navigationBarTitleText: '播放',

@@ -17,7 +17,7 @@ const store = configStore();
 
 class App extends Component {
   config = {
-    pages: ['pages/home/home', 'pages/songlist/songlist', 'pages/songPlay/songPlay'],
+    pages: ['pages/home/home', 'pages/album/album', 'pages/songPlay/songPlay'],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',

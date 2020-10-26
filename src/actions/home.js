@@ -1,5 +1,5 @@
 import { SET_HOME_BANNERS, SET_HOME_ALBUMS, CONCAT_HOME_ALBUMS } from '@/constants/home';
-import { getBanner, getAlbums } from '@/api/get';
+import { getBanner, getAlbumList } from '@/api/get';
 
 // 格式化专辑数据
 const formateAlbums = t => ({
@@ -10,7 +10,7 @@ const formateAlbums = t => ({
   playCount: t.playCount
 });
 
-export const getHomeBanners = () => async dispatch => {
+export const getBanners = () => async dispatch => {
   const {
     data: { banners }
   } = await getBanner(0);
@@ -24,10 +24,10 @@ export const getHomeBanners = () => async dispatch => {
   });
 };
 
-export const getHomeAlbums = (pageInfo, callback) => async dispatch => {
+export const getAlbums = (pageInfo, callback) => async dispatch => {
   const {
     data: { playlists }
-  } = await getAlbums(pageInfo);
+  } = await getAlbumList(pageInfo);
 
   const newData = playlists.map(formateAlbums);
 
@@ -38,13 +38,13 @@ export const getHomeAlbums = (pageInfo, callback) => async dispatch => {
   callback && callback();
 };
 
-export const concatHomeAlbums = (pageInfo, callback) => async (dispatch, getState) => {
+export const concatAlbums = (pageInfo, callback) => async (dispatch, getState) => {
   const {
     home: { albums }
   } = getState();
   const {
     data: { playlists }
-  } = await getAlbums(pageInfo);
+  } = await getAlbumList(pageInfo);
 
   const newData = albums.concat(playlists.map(formateAlbums));
 

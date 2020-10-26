@@ -14,7 +14,7 @@ export const checkMusic = privilege => {
  * @param {Array} arr
  * @param {Number} step 分片步长
  */
-export const arraySplit = (arr, step = 20) => {
+export const arraySplit = (arr, step = 100) => {
   const len = arr.length;
   const rec = [];
   if (len <= step) {
