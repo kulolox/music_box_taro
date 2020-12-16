@@ -30,6 +30,7 @@ class Album extends Component {
     });
     const { albumId } = this.$router.params;
     const key = `ALBUM_ID:${albumId}`;
+    // 歌单缓存，存在则直接设置，不存在则获取
     const cacheAlbum = Taro.getStorageSync(key);
     if (!cacheAlbum) {
       this.props.getAlbumsAction(albumId, () => {
